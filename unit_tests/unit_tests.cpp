@@ -130,20 +130,26 @@ BOOST_AUTO_TEST_CASE (linearexpr1_test)
 
 BOOST_AUTO_TEST_CASE (callbacks_test)
 {
+    static bool xGaveCallback = false;
+    static bool yGaveCallback = false;
+
     variable x(5), y(10);
     simplex_solver solver;
 
     solver.add_stay(x).add_stay(y);
 
     x.on_change([]() {
-        BOOST_CHECK(true);
+        xGaveCallback = true;
     });
 
     y.on_change([]() {
-        BOOST_CHECK(false);
+        yGaveCallback = true;
     });
 
     solver.suggest({ { x, 10 } });
+
+    BOOST_CHECK(xGaveCallback);
+    BOOST_CHECK(!yGaveCallback);
 }
 
 BOOST_AUTO_TEST_CASE (linearexpr2_test)
