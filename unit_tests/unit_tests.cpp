@@ -128,6 +128,24 @@ BOOST_AUTO_TEST_CASE (linearexpr1_test)
     BOOST_CHECK_EQUAL(expr2.evaluate(), -26);
 }
 
+BOOST_AUTO_TEST_CASE (callbacks_test)
+{
+    variable x(5), y(10);
+    simplex_solver solver;
+
+    solver.add_stay(x).add_stay(y);
+
+    x.on_change([]() {
+        BOOST_CHECK(true);
+    });
+
+    y.on_change([]() {
+        BOOST_CHECK(false);
+    });
+
+    solver.suggest({ { x, 10 } });
+}
+
 BOOST_AUTO_TEST_CASE (linearexpr2_test)
 {
     variable x (3);
