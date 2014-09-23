@@ -44,9 +44,21 @@ public:
     virtual bool is_pivotable() const { return false; }
     virtual bool is_restricted() const { return false; }
 
-    virtual void set_value(T new_value) { value_ = new_value; }
+    virtual void set_value(T new_value) {
+        value_ = new_value;
+        if(on_set)
+        {
+            on_set();
+        }
+    }
 
-    virtual void change_value(T new_value) { value_ = new_value; }
+    virtual void change_value(T new_value) {
+        value_ = new_value;
+        if(on_change)
+        {
+            on_change();
+        }
+    }
 
     virtual std::string to_string() const { return std::to_string(value_); }
 

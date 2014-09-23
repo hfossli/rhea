@@ -30,6 +30,16 @@ namespace rhea
 class abstract_variable
 {
 public:
+
+    typedef std::function<void(void)> set_cb;
+    typedef std::function<void(void)> change_cb;
+
+    /** Gets called whenever `set_value` is called. */
+    set_cb on_set;
+    /** Gets called whenever `change_value` is called. */
+    change_cb on_change;
+
+public:
     abstract_variable() {}
 
     virtual ~abstract_variable() {}

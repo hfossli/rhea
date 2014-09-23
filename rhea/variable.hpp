@@ -91,6 +91,14 @@ public:
     {
     }
 
+    void on_set(abstract_variable::set_cb on) {
+        p_->on_set = on;
+    }
+
+    void on_change(abstract_variable::change_cb on) {
+        p_->on_change = on;
+    }
+
     /** "Copy" a variable.
      *  The resulting variable won't be a true copy, but rather another
      *  counted reference to the same variable. */
