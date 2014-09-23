@@ -10,6 +10,7 @@
 #include "../rhea/linear_equation.hpp"
 #include "../rhea/iostream.hpp"
 #include "../rhea/errors_expl.hpp"
+#include "../rhea/approx.hpp"
 
 using namespace rhea;
 
@@ -96,6 +97,38 @@ BOOST_AUTO_TEST_CASE (variable_stream_test)
     std::stringstream s;
     s << x;
     BOOST_CHECK_EQUAL(s.str().substr(0,3), "3.0");
+}
+
+BOOST_AUTO_TEST_CASE (concistency)
+{
+    rhea::simplex_solver solver;
+    rhea::variable testValue (10);
+
+    solver.set_autosolve(false);
+    solver.add_stay(testValue);
+
+    solver.add_constraints({
+        testValue >= 200,
+    });
+
+    solver.solve();
+
+    bool resolvedTo200 = false;
+    bool resolvedTo500 = false;
+
+    for(int i = 0; i < 100; i++) {
+        solver.suggest({ { testValue, 500 } });
+        if(approx(testValue.value(), 200)) {
+            resolvedTo200 = true;
+        }
+        if(approx(testValue.value(), 500)) {
+            resolvedTo500 = true;
+        }
+    }
+
+    BOOST_CHECK_EQUAL(resolvedTo500 && resolvedTo200, false); // Big inconsistency
+    BOOST_CHECK(!resolvedTo200); // valid in regards to the constraint, but not expected
+    BOOST_CHECK(resolvedTo500); // suggestion should be met
 }
 
 BOOST_AUTO_TEST_CASE (linearexpr1_test)
