@@ -635,8 +635,41 @@ BOOST_AUTO_TEST_CASE (multiedit2_test)
     BOOST_CHECK_EQUAL(y.value(), 60);
     BOOST_CHECK_EQUAL(w.value(), 30);
     BOOST_CHECK_EQUAL(h.value(), 40);
+}
 
-    solver.suggest_value(x, 50).suggest_value(y, 60);
+BOOST_AUTO_TEST_CASE (multiedit2_with_autosolve_off_test)
+{
+    variable x(3), y(0), w(0), h(0);
+    simplex_solver solver;
+    solver.set_autosolve(false);
+
+    solver.add_stay(x).add_stay(y).add_stay(w).add_stay(h);
+    solver.add_edit_var(x).add_edit_var(y);
+    {
+        scoped_edit outer_edit (solver);
+
+        solver.suggest_value(x, 10).suggest_value(y, 20);
+        solver.resolve();
+
+        BOOST_CHECK_EQUAL(x.value(), 10);
+        BOOST_CHECK_EQUAL(y.value(), 20);
+        BOOST_CHECK_EQUAL(w.value(),  0);
+        BOOST_CHECK_EQUAL(h.value(),  0);
+
+        solver.add_edit_var(x).add_edit_var(y)
+        .add_edit_var(w).add_edit_var(h);
+
+        {
+            scoped_edit inner_edit (solver);
+            solver.suggest_value(w, 30).suggest_value(h, 40);
+        }
+
+        BOOST_CHECK_EQUAL(x.value(), 10);
+        BOOST_CHECK_EQUAL(y.value(), 20);
+        BOOST_CHECK_EQUAL(w.value(), 30);
+        BOOST_CHECK_EQUAL(h.value(), 40);
+
+        solver.suggest_value(x, 50).suggest_value(y, 60);
     }
 
     BOOST_CHECK_EQUAL(x.value(), 50);
