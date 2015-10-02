@@ -36,3 +36,4 @@ krb5doxy.tag
 
 # Generated headers
 rhea/version.hpp
+.DS_Store
