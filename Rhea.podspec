@@ -11,6 +11,8 @@ Pod::Spec.new do |s|
         :git => "https://github.com/Nocte-/rhea.git",
         :tag => s.version.to_s
         }
+    s.ios.deployment_target = '6.0'
+    s.osx.deployment_target = '10.8'
     s.library = 'c++'
     s.pod_target_xcconfig = {
        'CLANG_CXX_LANGUAGE_STANDARD' => 'c++11',
